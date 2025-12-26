@@ -5,10 +5,14 @@ function App() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/users")
-      .then((res) => res ? res.json() : [])
+    // Remove the localhost URL and use a relative path
+    fetch("/api/users")
+      .then((res) => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.json();
+      })
       .then((data) => setUsers(data))
-      .catch(console.error);
+      .catch((err) => console.error("Fetch error:", err));
   }, []);
 
   return (

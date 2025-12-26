@@ -1,0 +1,11 @@
+# app.yaml
+name: databricks-demo-app
+command:
+  - "npm"
+  - "start"
+install:
+  - "npm"
+  - "install"
+  - "npm"
+  - "run"
+  - "build"
