@@ -1,55 +1,56 @@
 const { DBSQLClient } = require('@databricks/sql');
+const axios = require('axios');
 
-/**
- * Executes a SQL query against a Databricks SQL Warehouse
- * @param {string} query - The SQL statement to run
- */
-async function executeQuery(query) {
-    // Validate that environment variables are present
-    if (!process.env.DATABRICKS_HOST) {
-        throw new Error("Missing DATABRICKS_HOST")
-    } else if (!process.env.DATABRICKS_WAREHOUSE_ID) {
-        throw new Error("Missing DATABRICKS_WAREHOUSE_ID")
-    } else if (!process.env.DATABRICKS_TOKEN) {
-        throw new Error("Missing DATABRICKS_TOKEN")
-    }
-    if (!process.env.DATABRICKS_HOST || !process.env.DATABRICKS_WAREHOUSE_ID || !process.env.DATABRICKS_TOKEN) {
-        throw new Error("Missing required Databricks environment variables. Check your app.yaml or App settings.");
-    }
-
-    const client = new DBSQLClient();
-
-    // Construct the correct HTTP path for the warehouse
-    const warehousePath = `/sql/1.0/warehouses/${process.env.DATABRICKS_WAREHOUSE_ID}`;
-
+async function getAccessToken() {
     try {
+        const host = process.env.DATABRICKS_HOST;
+        const clientId = process.env.DATABRICKS_CLIENT_ID;
+        const clientSecret = process.env.DATABRICKS_CLIENT_SECRET;
+
+        // Databricks OAuth token endpoint call karein
+        const response = await axios.post(
+            `https://${host}/oidc/token`,
+            new URLSearchParams({
+                'grant_type': 'client_credentials',
+                'scope': 'all-apis'
+            }),
+            {
+                auth: {
+                    username: clientId,
+                    password: clientSecret
+                }
+            }
+        );
+
+        return response.data.access_token;
+    } catch (error) {
+        console.error("Token Fetch Error:", error.response?.data || error.message);
+        throw new Error("Could not fetch OAuth token");
+    }
+}
+
+async function executeQuery(query) {
+    const client = new DBSQLClient();
+    try {
+        const token = await getAccessToken();
+
         await client.connect({
-            host: process.env.DATABRICKS_HOST.replace('https://', ''), // Remove https:// if present
-            path: warehousePath,
-            token: process.env.DATABRICKS_TOKEN
+            host: process.env.DATABRICKS_HOST,
+            path: `/sql/1.0/warehouses/${process.env.DATABRICKS_WAREHOUSE_ID}`,
+            token: token
         });
 
         const session = await client.openSession();
-
-        // Execute the statement
-        const queryOperation = await session.executeStatement(query, {
-            runAsync: true,
-            maxRows: 1000 // Optional: limit rows for performance
-        });
-
-        // Fetch the data
+        const queryOperation = await session.executeStatement(query);
         const result = await queryOperation.fetchAll();
 
-        // Clean up resources
         await queryOperation.close();
         await session.close();
-
         return result;
     } catch (error) {
-        console.error("Databricks SQL Execution Error:", error);
+        console.error("Query Execution Error:", error);
         throw error;
     } finally {
-        // Always close the client connection
         await client.close();
     }
 }
