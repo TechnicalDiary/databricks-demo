@@ -16,7 +16,7 @@ async function getAccessToken() {
             console.error("Client secredt not found");
             throw new Error("Client secredt not found");
         }
-
+        console.log('ENV:', process.env)
         // Databricks OAuth token endpoint call karein
         const response = await axios.post(
             `https://${host}/oidc/token`,
