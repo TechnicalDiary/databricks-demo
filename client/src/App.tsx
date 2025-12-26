@@ -6,7 +6,7 @@ function App() {
 
   useEffect(() => {
     fetch("http://localhost:8000/api/users")
-      .then((res) => res.json())
+      .then((res) => res ? res.json() : [])
       .then((data) => setUsers(data))
       .catch(console.error);
   }, []);
@@ -15,7 +15,7 @@ function App() {
     <div style={{ padding: "20px" }}>
       <h2>Users from Databricks</h2>
       <ul>
-        {users.map((user, index) => (
+        {users?.map((user, index) => (
           <li key={index}>
             {user[1]} – {user[2]}
           </li>
