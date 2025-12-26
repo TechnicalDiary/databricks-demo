@@ -6,6 +6,13 @@ const { DBSQLClient } = require('@databricks/sql');
  */
 async function executeQuery(query) {
     // Validate that environment variables are present
+    if (!process.env.DATABRICKS_HOST) {
+        throw new Error("Missing DATABRICKS_HOST")
+    } else if (!process.env.DATABRICKS_WAREHOUSE_ID) {
+        throw new Error("Missing DATABRICKS_WAREHOUSE_ID")
+    } else if (!process.env.DATABRICKS_TOKEN) {
+        throw new Error("Missing DATABRICKS_TOKEN")
+    }
     if (!process.env.DATABRICKS_HOST || !process.env.DATABRICKS_WAREHOUSE_ID || !process.env.DATABRICKS_TOKEN) {
         throw new Error("Missing required Databricks environment variables. Check your app.yaml or App settings.");
     }
