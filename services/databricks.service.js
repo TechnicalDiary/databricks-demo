@@ -6,6 +6,16 @@ async function getAccessToken() {
         const host = process.env.DATABRICKS_HOST;
         const clientId = process.env.DATABRICKS_CLIENT_ID;
         const clientSecret = process.env.DATABRICKS_CLIENT_SECRET;
+        if (!host) {
+            console.error("Host not found");
+            throw new Error("Host not found");
+        } else if (!clientId) {
+            console.error("ClientId not found");
+            throw new Error("ClientId not found");
+        } else if (!clientSecret) {
+            console.error("Client secredt not found");
+            throw new Error("Client secredt not found");
+        }
 
         // Databricks OAuth token endpoint call karein
         const response = await axios.post(
