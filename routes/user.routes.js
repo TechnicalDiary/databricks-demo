@@ -8,6 +8,7 @@ router.get("/users", async (req, res) => {
         const data = await executeQuery("SELECT * FROM demo_users");
         res.json(data);
     } catch (err) {
+        console.error('Database error', err)
         res.status(500).json({ error: "Failed to fetch users from Databricks" });
     }
 });
