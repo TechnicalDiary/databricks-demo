@@ -9,3 +9,9 @@ install:
   - "npm"
   - "run"
   - "build"
+
+env:
+  - name: "DATABRICKS_WAREHOUSE_ID"
+    value: "e809614608ea2cfd"
+  - name: "SOME_OTHER_VAR"
+    value: "some_value"
