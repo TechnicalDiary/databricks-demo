@@ -9,6 +9,7 @@ function App() {
     fetch("/api/users")
       .then((res) => {
         if (!res.ok) throw new Error("Network response was not ok");
+        console.log('Users', res.json())
         return res.json();
       })
       .then((data) => setUsers(data))
