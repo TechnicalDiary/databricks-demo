@@ -1,6 +1,6 @@
 const { DBSQLClient } = require('@databricks/sql');
-const axios = require('axios');
 
+<<<<<<< HEAD
 async function getAppToken() {
     try {
         const response = await axios.post(
@@ -27,10 +27,16 @@ async function executeQuery(query) {
     const client = new DBSQLClient();
     try {
         const token = await getAppToken();
+=======
+// Token ab hum function argument mein pass karenge
+async function executeQuery(query, userToken) {
+    const client = new DBSQLClient();
+    try {
+>>>>>>> refs/remotes/origin/main
         await client.connect({
             host: process.env.DATABRICKS_HOST,
             path: `/sql/1.0/warehouses/${process.env.DATABRICKS_WAREHOUSE_ID}`,
-            token: token
+            token: userToken // User ka token jo header se aaya
         });
 
         const session = await client.openSession();
@@ -39,6 +45,12 @@ async function executeQuery(query) {
         await queryOperation.close();
         await session.close();
         return result;
+<<<<<<< HEAD
+=======
+    } catch (error) {
+        console.error("Query Error:", error);
+        throw error;
+>>>>>>> refs/remotes/origin/main
     } finally {
         await client.close();
     }
