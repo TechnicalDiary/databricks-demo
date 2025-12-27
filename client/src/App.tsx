@@ -21,7 +21,7 @@ function App() {
       <ul>
         {users?.map((user, index) => (
           <li key={index}>
-            {user[1]} – {user[2]}
+            {user}
           </li>
         ))}
       </ul>
