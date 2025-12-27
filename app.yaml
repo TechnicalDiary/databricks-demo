@@ -1,17 +1,19 @@
-# app.yaml
-name: databricks-demo-app
+name: "databricks-demo"
 command:
-  - "npm"
-  - "start"
+  - "node"
+  - "app.js"
 install:
   - "npm"
   - "install"
   - "npm"
   - "run"
   - "build"
-
+# This attempts to force the login screen and header injection
+# Note: If the app fails to deploy, remove these 2 lines.
+auth:
+  enabled: true
 env:
+  - name: "DATABRICKS_HOST"
+    value: "dbc-682bf7be-55f7.cloud.databricks.com"
   - name: "DATABRICKS_WAREHOUSE_ID"
     value: "e809614608ea2cfd"
-  - name: "SOME_OTHER_VAR"
-    value: "some_value"
