@@ -15,13 +15,24 @@ router.get("/users", async (req, res) => {
 
 // 2. POST: Insert a new user
 router.post("/users", async (req, res) => {
-    const { id, name, email } = req.body;
+    const { name, email } = req.body; // No 'id' needed from frontend
+
     try {
-        const query = `INSERT INTO workspace.default.demo_users (id, name, email) VALUES (${id}, '${name}', '${email}')`;
-        await executeQuery(query);
+        // Validation: Check if email already exists
+        const checkQuery = `SELECT email FROM workspace.default.demo_users WHERE email = '${email}'`;
+        const existing = await executeQuery(checkQuery);
+
+        if (existing && existing.length > 0) {
+            return res.status(400).json({ error: "A user with this email already exists!" });
+        }
+
+        // Insert: We omit 'id' so Databricks generates it automatically
+        const insertQuery = `INSERT INTO workspace.default.demo_users (name, email) VALUES ('${name}', '${email}')`;
+        await executeQuery(insertQuery);
+
         res.status(201).json({ message: "User created successfully" });
     } catch (err) {
-        res.status(500).json({ error: "Insert failed", details: err.message });
+        res.status(500).json({ error: "Server error", details: err.message });
     }
 });
 
