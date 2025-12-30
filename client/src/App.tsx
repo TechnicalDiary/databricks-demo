@@ -4,6 +4,8 @@ import { Paper, Typography, Box, Button, Dialog, DialogTitle, DialogContent, Dia
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import LoadingButton from '@mui/lab/LoadingButton';
+import SaveIcon from '@mui/icons-material/Save';
 import './App.css';
 
 interface User {
@@ -18,6 +20,7 @@ function App() {
   const [open, setOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User>({ id: '', name: '', email: '' });
   const [isEdit, setIsEdit] = useState(false);
+  const [saving, setSaving] = useState(false);
 
 
   const fetchUsers = useCallback(async () => {
@@ -49,6 +52,7 @@ function App() {
   };
 
   const handleSave = async () => {
+    setSaving(true); // Start Loader
     const method = isEdit ? 'PUT' : 'POST';
     const url = isEdit ? `/api/users/${currentUser.id}` : '/api/users';
 
@@ -64,6 +68,8 @@ function App() {
       }
     } catch (err) {
       console.error("Save error:", err);
+    } finally {
+      setSaving(false); // Stop Loader (Success or Error)
     }
   };
 
@@ -129,7 +135,15 @@ function App() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleSave} variant="contained">Save</Button>
+          <LoadingButton
+            onClick={handleSave}
+            loading={saving}
+            loadingPosition="start"
+            startIcon={<SaveIcon />}
+            variant="contained"
+          >
+            Save
+          </LoadingButton>
         </DialogActions>
       </Dialog>
     </Box>
