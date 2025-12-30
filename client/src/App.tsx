@@ -127,9 +127,6 @@ function App() {
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>{isEdit ? 'Edit User' : 'Add New User'}</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
-          {/* {!isEdit && (
-            <TextField label="ID" type="number" value={currentUser.id} onChange={(e) => setCurrentUser({ ...currentUser, id: e.target.value })} />
-          )} */}
           <TextField label="Name" value={currentUser.name} onChange={(e) => setCurrentUser({ ...currentUser, name: e.target.value })} />
           <TextField label="Email" value={currentUser.email} onChange={(e) => setCurrentUser({ ...currentUser, email: e.target.value })} />
         </DialogContent>
