@@ -4,7 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import userRoutes from "./routes/user.routes.js";
-import contractRoutes from "./routes/user.routes.js";
+import contractRoutes from "./routes/contract.routes.js";
 
 const app = express();
 
