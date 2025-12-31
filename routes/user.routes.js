@@ -4,7 +4,7 @@ import { executeQuery } from "../services/databricks.service.js";
 const router = express.Router();
 
 // 1. GET: Fetch all users
-router.get("/users", async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const data = await executeQuery("SELECT * FROM workspace.default.demo_users");
         res.json(data);
@@ -14,7 +14,7 @@ router.get("/users", async (req, res) => {
 });
 
 // 2. POST: Insert a new user
-router.post("/users", async (req, res) => {
+router.post("/", async (req, res) => {
     const { name, email } = req.body; // No 'id' needed from frontend
 
     try {
@@ -37,7 +37,7 @@ router.post("/users", async (req, res) => {
 });
 
 // 3. PUT: Update an existing user
-router.put("/users/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
     const { id } = req.params;
     const { name, email } = req.body;
     try {
@@ -50,7 +50,7 @@ router.put("/users/:id", async (req, res) => {
 });
 
 // 4. DELETE: Remove a user
-router.delete("/users/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
     const { id } = req.params;
     try {
         const query = `DELETE FROM workspace.default.demo_users WHERE id = ${id}`;
